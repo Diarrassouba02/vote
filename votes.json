@@ -1,0 +1,37 @@
+{
+  "candidates": [
+    {
+      "id": 1,
+      "nom": "KOUASSI Ange",
+      "slogan": "Unis pour une 6ème meilleure !",
+      "emoji": "🌟",
+      "votes": 0
+    },
+    {
+      "id": 2,
+      "nom": "DIALLO Fatou",
+      "slogan": "Ensemble, on va plus loin !",
+      "emoji": "💫",
+      "votes": 2
+    },
+    {
+      "id": 3,
+      "nom": "BAMBA Koné",
+      "slogan": "Le changement, c'est maintenant !",
+      "emoji": "🔥",
+      "votes": 1
+    },
+    {
+      "id": 4,
+      "nom": "OUATTARA Mariam",
+      "slogan": "La force de l'unité !",
+      "emoji": "✨",
+      "votes": 0
+    }
+  ],
+  "voters": [
+    "0707118449",
+    "0708118449",
+    "0788118446"
+  ]
+}

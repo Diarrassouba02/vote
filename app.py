@@ -1,0 +1,90 @@
+from flask import Flask, request, jsonify, send_from_directory
+from flask_cors import CORS
+import json
+import os
+
+
+liste_numero=['0707871695','0595081204']
+app = Flask(__name__)
+CORS(app)
+
+DB_PATH = os.path.join(os.path.dirname(__file__), 'votes.json')
+
+@app.route('/')
+def index():
+    return send_from_directory(os.path.dirname(__file__), 'index.html')
+
+def load_db():
+    with open(DB_PATH, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+def save_db(data):
+    with open(DB_PATH, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+@app.route('/api/candidates', methods=['GET'])
+def get_candidates():
+    db = load_db()
+    return jsonify(db['candidates'])
+
+@app.route('/api/vote', methods=['POST'])
+def vote():
+    data = request.get_json()
+    telephone = data.get('telephone', '').strip()
+    candidate_id = data.get('candidate_id')
+    
+    if telephone not in liste_numero:
+       return jsonify({'error': 'Ce numéro n\'est pas autorisé à voter'}), 403
+
+    if not telephone or not candidate_id:
+        return jsonify({'error': 'Numéro de téléphone et candidat requis'}), 400
+
+    # Validate phone number (Côte d'Ivoire format)
+    import re
+    phone_clean = re.sub(r'\s+', '', telephone)
+    if not re.match(r'^(0?[0-9]{8,10})$', phone_clean):
+        return jsonify({'error': 'Numéro de téléphone invalide'}), 400
+
+    db = load_db()
+
+    # Check if already voted
+    if phone_clean in db['voters']:
+        return jsonify({'error': 'Ce numéro a déjà voté !'}), 409
+
+    # Find candidate
+    candidate = next((c for c in db['candidates'] if c['id'] == candidate_id), None)
+    if not candidate:
+        return jsonify({'error': 'Candidat introuvable'}), 404
+
+    # Register vote
+    candidate['votes'] += 1
+    db['voters'].append(phone_clean)
+    save_db(db)
+
+    return jsonify({'success': True, 'message': f'Vote pour {candidate["nom"]} enregistré !'})
+
+@app.route('/api/results', methods=['GET'])
+def get_results():
+    db = load_db()
+    total = sum(c['votes'] for c in db['candidates'])
+    results = []
+    for c in db['candidates']:
+        results.append({
+            **c,
+            'percentage': round((c['votes'] / total * 100) if total > 0 else 0, 1)
+        })
+    results.sort(key=lambda x: x['votes'], reverse=True)
+    return jsonify({'candidates': results, 'total_votes': total})
+
+@app.route('/api/check-phone', methods=['POST'])
+def check_phone():
+    data = request.get_json()
+    telephone = data.get('telephone', '').strip()
+    import re
+    phone_clean = re.sub(r'\s+', '', telephone)
+    db = load_db()
+    already_voted = phone_clean in db['voters']
+    return jsonify({'already_voted': already_voted})
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
