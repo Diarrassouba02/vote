@@ -10,10 +10,6 @@ CORS(app)
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'votes.json')
 
-@app.route('/')
-def index():
-    return send_from_directory(os.path.dirname(__file__), 'index.html')
-
 def load_db():
     with open(DB_PATH, 'r', encoding='utf-8') as f:
         return json.load(f)
@@ -21,6 +17,27 @@ def load_db():
 def save_db(data):
     with open(DB_PATH, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+
+def init_db():
+    """Initialiser la BD si elle n'existe pas"""
+    if not os.path.exists(DB_PATH):
+        default_data = {
+            "candidates": [
+                {"id": 1, "nom": "KOUASSI Ange", "slogan": "Unis pour une 6ème meilleure !", "emoji": "🌟", "votes": 0},
+                {"id": 2, "nom": "DIALLO Fatou", "slogan": "Ensemble, on va plus loin !", "emoji": "🚀", "votes": 0},
+                {"id": 3, "nom": "BAMBA Koné", "slogan": "Le changement, c'est maintenant !", "emoji": "⚡", "votes": 0},
+                {"id": 4, "nom": "OUATTARA Mariam", "slogan": "La force de l'unité !", "emoji": "💪", "votes": 0}
+            ],
+            "voters": []
+        }
+        save_db(default_data)
+
+# Initialiser la BD au démarrage
+init_db()
+
+@app.route('/')
+def index():
+    return send_from_directory(os.path.dirname(__file__), 'index.html')
 
 @app.route('/api/candidates', methods=['GET'])
 def get_candidates():
