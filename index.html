@@ -505,7 +505,10 @@
 <script type="text/babel">
 const { useState, useEffect, useCallback } = React;
 
-const API = 'http://localhost:5000/api';
+// Déterminer automatiquement l'URL de l'API
+const API = window.location.hostname === 'localhost'
+  ? 'http://localhost:5000/api'
+  : `${window.location.protocol}//${window.location.host}/api`;
 
 function Toast({ message, type, onClose }) {
   useEffect(() => {

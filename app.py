@@ -20,17 +20,23 @@ def save_db(data):
 
 def init_db():
     """Initialiser la BD si elle n'existe pas"""
-    if not os.path.exists(DB_PATH):
-        default_data = {
-            "candidates": [
-                {"id": 1, "nom": "KOUASSI Ange", "slogan": "Unis pour une 6ème meilleure !", "emoji": "🌟", "votes": 0},
-                {"id": 2, "nom": "DIALLO Fatou", "slogan": "Ensemble, on va plus loin !", "emoji": "🚀", "votes": 0},
-                {"id": 3, "nom": "BAMBA Koné", "slogan": "Le changement, c'est maintenant !", "emoji": "⚡", "votes": 0},
-                {"id": 4, "nom": "OUATTARA Mariam", "slogan": "La force de l'unité !", "emoji": "💪", "votes": 0}
-            ],
-            "voters": []
-        }
-        save_db(default_data)
+    try:
+        if not os.path.exists(DB_PATH):
+            default_data = {
+                "candidates": [
+                    {"id": 1, "nom": "KOUASSI Ange", "slogan": "Unis pour une 6ème meilleure !", "emoji": "🌟", "votes": 0},
+                    {"id": 2, "nom": "DIALLO Fatou", "slogan": "Ensemble, on va plus loin !", "emoji": "🚀", "votes": 0},
+                    {"id": 3, "nom": "BAMBA Koné", "slogan": "Le changement, c'est maintenant !", "emoji": "⚡", "votes": 0},
+                    {"id": 4, "nom": "OUATTARA Mariam", "slogan": "La force de l'unité !", "emoji": "💪", "votes": 0}
+                ],
+                "voters": []
+            }
+            save_db(default_data)
+            print(f"✅ BD créée: {DB_PATH}")
+        else:
+            print(f"✅ BD existe déjà: {DB_PATH}")
+    except Exception as e:
+        print(f"❌ Erreur init_db: {e}")
 
 # Initialiser la BD au démarrage
 init_db()
@@ -41,8 +47,12 @@ def index():
 
 @app.route('/api/candidates', methods=['GET'])
 def get_candidates():
-    db = load_db()
-    return jsonify(db['candidates'])
+    try:
+        db = load_db()
+        return jsonify(db['candidates'])
+    except Exception as e:
+        print(f"❌ Erreur get_candidates: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/vote', methods=['POST'])
 def vote():
