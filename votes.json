@@ -2,37 +2,32 @@
   "candidates": [
     {
       "id": 1,
-      "nom": "KOUASSI Ange",
+      "nom": "diarrassouba le sage ",
       "slogan": "Unis pour une 6ème meilleure !",
       "emoji": "🌟",
       "votes": 0
     },
     {
       "id": 2,
-      "nom": "DIALLO Fatou",
+      "nom": "Kone Sekou",
       "slogan": "Ensemble, on va plus loin !",
       "emoji": "💫",
       "votes": 3
     },
     {
       "id": 3,
-      "nom": "BAMBA Koné",
+      "nom": "Qindo rose",
       "slogan": "Le changement, c'est maintenant !",
       "emoji": "🔥",
       "votes": 1
     },
     {
       "id": 4,
-      "nom": "OUATTARA Mariam",
+      "nom": "Damoin",
       "slogan": "La force de l'unité !",
       "emoji": "✨",
       "votes": 0
     }
   ],
-  "voters": [
-    "0707118449",
-    "0708118449",
-    "0788118446",
-    "0595081204"
-  ]
+  "voters": []
 }
